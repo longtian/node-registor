@@ -33,6 +33,10 @@ dockerEvents.on('event', function (data) {
   });
 });
 
+dockerEvents.on('error', function () {
+  log.error(arguments);
+});
+
 wss.on('connection', function (c) {
   var remoteAddress = {
     remotePort: c._socket.remotePort,
