@@ -4,8 +4,7 @@
   "description": "Registor for service discovery between different docker hosts",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "start":"sudo node server.js"
+    "start": "sudo node server.js"
   },
   "keywords": [
     "registor",
@@ -16,8 +15,10 @@
   "author": "wyvernnot",
   "license": "MIT",
   "dependencies": {
+    "bunyan": "^1.5.1",
     "express": "^4.13.3",
     "http-proxy": "^1.12.0",
+    "request": "^2.65.0",
     "ws": "^0.8.0"
   }
 }

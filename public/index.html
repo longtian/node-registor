@@ -64,6 +64,10 @@
                 });
             });
 
+            var socket = new WebSocket('ws://' + window.location.host);
+            socket.onmessage = function (e) {
+                console.log(JSON.parse(e.data));
+            }
         })
     </script>
 </head>
