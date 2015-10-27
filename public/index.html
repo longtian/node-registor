@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registor</title>
+    <link rel="stylesheet" href="css/jquery.dataTables.css"/>
+    <link rel="stylesheet" href="css/default.css"/>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.dataTables.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $.extend($.fn.dataTable.defaults, {
+                paging: false
+            });
+
+            /**
+             * @link https://github.com/docker/docker/blob/master/docs/reference/api/docker_remote_api_v1.20.md#21-containers
+             **/
+            var loadContainers = $.getJSON('/docker/containers/json', {});
+
+            loadContainers.then(function (res) {
+                /**
+                 * @link http://datatables.net/reference/option/columns.render
+                 *
+                 * @param data
+                 * @param type
+                 * @param row
+                 */
+                function renderPorts(data, type, row) {
+
+                    var _html = '';
+                    var hostname = window.location.hostname;
+                    $.each(data, function (i, port) {
+                        if (port.PublicPort) {
+                            var link = "http://" + hostname + ":" + port.PublicPort;
+                            _html += "<div><a target=\"_blank\" href=\"" + link + '' + "\">" + link + "</a></div>"
+                        } else {
+                            _html += "<div>" + port.PrivatePort + "</div>";
+                        }
+                    })
+                    return _html;
+
+                    return JSON.stringify(data);
+                }
+
+                $("#containers").DataTable({
+                    data: res,
+                    columns: [
+                        {title: 'ID', data: 'Id'},
+                        {title: 'Image', data: 'Image'},
+                        {title: 'Status', data: 'Status'},
+                        {title: 'Ports', data: 'Ports', render: renderPorts},
+                    ]
+                });
+            });
+
+            $('code[href]').each(function () {
+                var self = this;
+                $.getJSON($(this).attr('href'), function (data) {
+                    $(self).text(JSON.stringify(data, null, 2));
+                    hljs.highlightBlock(self);
+                });
+            });
+
+        })
+    </script>
+</head>
+<body>
+
+<h1>Running Images</h1>
+<table id="containers"></table>
+
+<h1>Docker Infomation</h1>
+<pre><code href="/docker/info"></code></pre>
+
+<h2>Docker Version</h2>
+<pre><code href="/docker/version"></code></pre>
+
+</body>
+</html>
